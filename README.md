@@ -1,13 +1,57 @@
 # Practica3
 ## Задание 1: Список всех Docker-контейнеров с датой
 
+```
+#!/bin/bash
+
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+FILE="containers-$DATE.txt"
+
+echo "Дата проверки: $(date)" > $FILE
+docker ps >> $FILE
+
+echo "Результат сохранён в $FILE"
+
+```
+
 <img width="917" height="245" alt="image" src="https://github.com/user-attachments/assets/13b6fe54-8e3f-411c-b523-d6581c3171a8" />
 
 ## Задание 2: Проверка доступности веб-сервиса через curl
 
+```
+#!/bin/bash
+
+URL="http://localhost:8080"
+DATE=$(date +"%Y-%m-%d")
+LOG="errors-$DATE.log"
+
+STATUS=$(curl -o /dev/null -s -w "%{http_code}" $URL)
+
+if [ "$STATUS" = "200" ]; then
+    echo "$URL - OK - $(date)"
+else
+    echo "$URL - FAIL - $(date)" | tee -a $LOG
+fi
+
+```
+
 <img width="668" height="157" alt="image" src="https://github.com/user-attachments/assets/a49c0b13-ae17-451e-84e9-c723fe386768" />
 
 ## Задание 3: Сколько места занимает каждый Docker-образ
+
+```
+#!/bin/bash
+
+DATE=$(date +"%Y-%m-%d")
+FILE="docker-images-sizes-$DATE.txt"
+
+echo "Дата: $(date)" > $FILE
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" >> $FILE
+
+echo "Самый большой образ:" >> $FILE
+docker images --format "{{.Repository}} {{.Size}}" | sort -hr -k2 | head -1 >> $FILE
+
+```
 
 <img width="693" height="333" alt="image" src="https://github.com/user-attachments/assets/022f8871-fcd9-4069-9059-3d0179a5f8f3" />
 
